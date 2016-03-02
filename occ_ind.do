@@ -141,6 +141,33 @@ label define industry 0 "agriculture" 1 "mining" 2 "construction" 3 "manufacturi
 label values ind industry
 //4. transportation, communications, public utilities
 drop if ind==1 | ind==0
+gen D_abs=abs(D)
 save SENI_mer, replace
+drop if D_abs<0.01
 
 /*------------------------------------------------------------------------------*/
+use new, replace
+drop if lab==1
+keep if year ==1994
+collapse (count) SENI  [pweight=wtsupp], by(occ1990 ind1990 edu_att)
+label var SENI "no. of SENI"
+drop if SENI==0
+save SENI_count, replace
+drop if SENI<5000
+
+mer 1:m occ1990 ind1990 edu_a  using SENI_mer
+drop if D==.
+drop if SENI_2014==1
+drop if ind==2  //construction
+
+
+save mer, replace
+
+
+//
+
+
+
+
+
+
